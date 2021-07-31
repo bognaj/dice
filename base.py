@@ -50,25 +50,56 @@ class Player:
 
     def one_turn(self):
         """One player's turn"""
+        curr = 0
         throw = self.throw_dices(5)
-        print(throw)
         res = collect_points(throw)
-        self.add_points(res[0])
+        curr += res[0]
         act = 5 - res[1]
+        if self.points == 0:
+            if curr >= 75: # entering the game
+                if save_score(self.risk):
+                    self.add_points(curr)
+                    res = [0, 0]
         while res[0] > 0:
             if act > 0:
                 throw = self.throw_dices(act)
-                print(throw)
                 res = collect_points(throw)
-                self.add_points(res[0])
+                curr += res[0]
                 act -= res[1]
+                if self.points == 0:
+                    if curr >= 75:
+                        if (save_score(self.risk) and (curr >= 25)) and (res[0] > 0):
+                            self.add_points(curr)
+                            res = [0, 0]
+                else:
+                    if self.points >= 900: # ending the game
+                        if (curr >= 1000 - self.points) and (res[0] > 0):
+                            self.add_points(curr)
+                            res = [0, 0]
+                    else:
+                        if (save_score(self.risk) and (curr >= 25)) and (res[0] > 0):
+                            self.add_points(curr)
+                            res = [0, 0]
             elif act == 0:
                 act = 5
                 throw = self.throw_dices(act)
-                print(throw)
                 res = collect_points(throw)
-                self.add_points(res[0])
+                curr += res[0]
                 act -= res[1]
+                if self.points == 0:
+                    if (curr >= 75) and (res[0] > 0):
+                        if save_score(self.risk):
+                            self.add_points(curr)
+                            res = [0, 0]
+                else:
+                    if self.points >= 900:
+                        if (curr >= 1000 - self.points) and (res[0] > 0):
+                            self.add_points(curr)
+                            res = [0, 0]
+                    else:
+                        if (save_score(self.risk) and (curr >= 25)) and (res[0] > 0):
+                            self.add_points(curr)
+                            res = [0, 0]
         return self.points
 
 
@@ -117,7 +148,20 @@ def collect_points(throw_result):
         
     return (points, pointed_dices)
 
+def save_score(risk):
+    # decision whether to save the score or risk and go ahead
+    var = r.random()
+    if var > risk:
+        return True
+    else:
+        return False
+
 
 if __name__ == "__main__":
-    Bodzia = Player(1, 1)
-    print(Bodzia.one_turn())
+    Bodzia = Player(1, 0.1)
+    Milosz = Player(2, 0.8)
+    while (Bodzia.points < 1000) and (Milosz.points < 1000):
+        Bodzia.one_turn()
+        Milosz.one_turn()
+        print(str(Bodzia.points) + "           " + str(Milosz.points))
+    
