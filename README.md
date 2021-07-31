@@ -1,5 +1,8 @@
 # Kości
 
+Projekt inspirowany rozmowami toczącymi się na wakacjach przy długich rozgrywkach w kości. 
+
+
 Zasady liczenia punktów:
 - wyrzucenie wartości `1` na kostce -> 10 punktów;
 - wyrzucenie wartości `5` na kostce -> 5 punktów;
