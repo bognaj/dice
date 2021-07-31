@@ -158,10 +158,16 @@ def save_score(risk):
 
 
 if __name__ == "__main__":
-    Bodzia = Player(1, 0.1)
-    Milosz = Player(2, 0.8)
-    while (Bodzia.points < 1000) and (Milosz.points < 1000):
+    Roman = Player(1, 0.7)
+    Lidia = Player(2, 0.3)
+    Bodzia = Player(3, 0.5)
+    Milosz = Player(4, 0.2)
+    print("R|" + "           " + "L|" + "           " + "B|" + "           " + "M")
+    print("----------------------------------------------------------------------------------")
+    while ((Bodzia.points < 1000) and (Milosz.points < 1000)) and ((Lidia.points < 1000) and (Roman.points < 1000)):
+        Roman.one_turn()
+        Lidia.one_turn()
         Bodzia.one_turn()
         Milosz.one_turn()
-        print(str(Bodzia.points) + "           " + str(Milosz.points))
+        print(str(Roman.points) + "|           " + str(Lidia.points) + "|          " + str(Bodzia.points) + "|          " + str(Milosz.points))
     
