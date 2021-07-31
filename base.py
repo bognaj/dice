@@ -57,7 +57,7 @@ class Player:
         act = 5 - res[1]
         if self.points == 0:
             if curr >= 75: # entering the game
-                if save_score(self.risk):
+                if save_score(max([self.risk - change_risk(act), 0])):
                     self.add_points(curr)
                     res = [0, 0]
         while res[0] > 0:
@@ -68,7 +68,7 @@ class Player:
                 act -= res[1]
                 if self.points == 0:
                     if curr >= 75:
-                        if (save_score(self.risk) and (curr >= 25)) and (res[0] > 0):
+                        if (save_score(max([self.risk - change_risk(act), 0])) and (curr >= 25)) and (res[0] > 0):
                             self.add_points(curr)
                             res = [0, 0]
                 else:
@@ -77,7 +77,7 @@ class Player:
                             self.add_points(curr)
                             res = [0, 0]
                     else:
-                        if (save_score(self.risk) and (curr >= 25)) and (res[0] > 0):
+                        if (save_score(max([self.risk - change_risk(act), 0])) and (curr >= 25)) and (res[0] > 0):
                             self.add_points(curr)
                             res = [0, 0]
             elif act == 0:
@@ -88,7 +88,7 @@ class Player:
                 act -= res[1]
                 if self.points == 0:
                     if (curr >= 75) and (res[0] > 0):
-                        if save_score(self.risk):
+                        if save_score(max([self.risk - change_risk(act), 0])):
                             self.add_points(curr)
                             res = [0, 0]
                 else:
@@ -97,7 +97,7 @@ class Player:
                             self.add_points(curr)
                             res = [0, 0]
                     else:
-                        if (save_score(self.risk) and (curr >= 25)) and (res[0] > 0):
+                        if (save_score(max([self.risk - change_risk(act), 0])) and (curr >= 25)) and (res[0] > 0):
                             self.add_points(curr)
                             res = [0, 0]
         return self.points
@@ -155,6 +155,19 @@ def save_score(risk):
         return True
     else:
         return False
+
+def change_risk(dice_num):
+    if (dice_num == 0) or (dice_num == 5):
+        return 0.2
+    elif dice_num == 1:
+        return 0
+    elif dice_num == 2:
+        return 0.05
+    elif dice_num == 3:
+        return 0.1
+    elif dice_num == 4:
+        return 0.15
+    
 
 
 if __name__ == "__main__":
