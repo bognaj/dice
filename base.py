@@ -1,5 +1,6 @@
 import random as r
 import statistics as st
+import matplotlib.pyplot as plt
 
 class Dice:
     """Class representing dice"""
@@ -197,25 +198,84 @@ if __name__ == "__main__":
         B_scores.append(B_points[-1])
         M_scores.append(M_points[-1])
 
-    print("Roman's mean score: " + str(st.mean(R_scores)))
-    print("Lidia's mean score: " + str(st.mean(L_scores)))
-    print("Bodzia's mean score: " + str(st.mean(B_scores)))
-    print("Miłosz's mean score: " + str(st.mean(M_scores)))
 
-    print("Roman's median: " + str(st.median(sorted(R_scores))))
-    print("Lidia's median: " + str(st.median(sorted(L_scores))))
-    print("Bodzia's median: " + str(st.median(sorted(B_scores))))
-    print("Miłosz's median: " + str(st.median(sorted(M_scores))))
+    R_wins = sum([i >= 1000 for i in R_scores])
+    L_wins = sum([i >= 1000 for i in L_scores])
+    B_wins = sum([i >= 1000 for i in B_scores])
+    M_wins = sum([i >= 1000 for i in M_scores])
 
-    print("Roman's mode: " + str(st.mode(R_scores)))
-    print("Lidia's mode: " + str(st.mode(L_scores)))
-    print("Bodzia's mode: " + str(st.mode(B_scores)))
-    print("Miłosz's mode: " + str(st.mode(M_scores)))
+    print("Roman's_wins: " + str(R_wins))
+    print("Lidia's_wins: " + str(L_wins))
+    print("Bodzia's_wins: " + str(B_wins))
+    print("Miłosz's_wins: " + str(M_wins))
+    print("------------------------------")
 
-    print("Roman's standard deviation: " + str(st.stdev(R_scores)))
-    print("Lidia's standard deviation: " + str(st.stdev(L_scores)))
-    print("Bodzia's standard deviation: " + str(st.stdev(B_scores)))
-    print("Miłosz's standard deviation: " + str(st.stdev(M_scores)))
+    R_mean = st.mean(R_scores)
+    L_mean = st.mean(L_scores)
+    B_mean = st.mean(B_scores)
+    M_mean = st.mean(M_scores)
+
+    print("Roman's mean score: " + str(R_mean))
+    print("Lidia's mean score: " + str(L_mean))
+    print("Bodzia's mean score: " + str(B_mean))
+    print("Miłosz's mean score: " + str(M_mean))
+    print("------------------------------")
+
+    R_median = st.median(sorted(R_scores))
+    L_median = st.median(sorted(L_scores))
+    B_median = st.median(sorted(B_scores))
+    M_median = st.median(sorted(M_scores))
+
+    print("Roman's median: " + str(R_median))
+    print("Lidia's median: " + str(L_median))
+    print("Bodzia's median: " + str(B_median))
+    print("Miłosz's median: " + str(M_median))
+    print("------------------------------")
+
+    R_stdev = st.stdev(R_scores)
+    L_stdev = st.stdev(L_scores)
+    B_stdev = st.stdev(B_scores)
+    M_stdev = st.stdev(M_scores)
+
+    print("Roman's standard deviation: " + str(R_stdev))
+    print("Lidia's standard deviation: " + str(L_stdev))
+    print("Bodzia's standard deviation: " + str(B_stdev))
+    print("Miłosz's standard deviation: " + str(M_stdev))
+    print("------------------------------")
+
+    risks = [Roman.risk, Lidia.risk, Bodzia.risk, Milosz.risk]
+    wins = [R_wins, L_wins, B_wins, M_wins]
+    means = [R_mean, L_mean, B_mean, M_mean]
+    medians = [R_median, L_median, B_median, M_median]
+    stdevs = [R_stdev, L_stdev, B_stdev, M_stdev]
+
+    plt.subplot(2, 2, 1)
+    plt.scatter(risks, wins)
+    plt.xlabel("risk")
+    plt.ylabel("number of wins")
+    plt.title("WINS")
+
+    plt.subplot(2, 2, 2)
+    plt.scatter(risks, means)
+    plt.xlabel("risk")
+    plt.ylabel("mean score")
+    plt.title("MEAN")
+
+    plt.subplot(2, 2, 3)
+    plt.scatter(risks, medians)
+    plt.xlabel("risk")
+    plt.ylabel("median")
+    plt.title("MEDIAN")
+
+    plt.subplot(2, 2, 4)
+    plt.scatter(risks, stdevs)
+    plt.xlabel("risk")
+    plt.ylabel("standard deviation")
+    plt.title("STANDARD DEVIATION")
+
+    plt.show()
+
+
 
 
 
