@@ -1,4 +1,5 @@
 import random as r
+import statistics as st
 
 class Dice:
     """Class representing dice"""
@@ -57,7 +58,7 @@ class Player:
         act = 5 - res[1]
         if self.points == 0:
             if curr >= 75: # entering the game
-                if save_score(max([self.risk - change_risk(act), 0])):
+                if save_score(min([self.risk + change_risk(act), 1])):
                     self.add_points(curr)
                     res = [0, 0]
         while res[0] > 0:
@@ -68,7 +69,7 @@ class Player:
                 act -= res[1]
                 if self.points == 0:
                     if curr >= 75:
-                        if (save_score(max([self.risk - change_risk(act), 0])) and (curr >= 25)) and (res[0] > 0):
+                        if (save_score(min([self.risk + change_risk(act), 1])) and (curr >= 25)) and (res[0] > 0):
                             self.add_points(curr)
                             res = [0, 0]
                 else:
@@ -77,7 +78,7 @@ class Player:
                             self.add_points(curr)
                             res = [0, 0]
                     else:
-                        if (save_score(max([self.risk - change_risk(act), 0])) and (curr >= 25)) and (res[0] > 0):
+                        if (min([self.risk + change_risk(act), 1])) and (curr >= 25) and (res[0] > 0):
                             self.add_points(curr)
                             res = [0, 0]
             elif act == 0:
@@ -88,7 +89,7 @@ class Player:
                 act -= res[1]
                 if self.points == 0:
                     if (curr >= 75) and (res[0] > 0):
-                        if save_score(max([self.risk - change_risk(act), 0])):
+                        if save_score(min([self.risk + change_risk(act), 1])):
                             self.add_points(curr)
                             res = [0, 0]
                 else:
@@ -97,7 +98,7 @@ class Player:
                             self.add_points(curr)
                             res = [0, 0]
                     else:
-                        if (save_score(max([self.risk - change_risk(act), 0])) and (curr >= 25)) and (res[0] > 0):
+                        if (save_score(min([self.risk + change_risk(act), 1])) and (curr >= 25)) and (res[0] > 0):
                             self.add_points(curr)
                             res = [0, 0]
         return self.points
@@ -167,20 +168,54 @@ def change_risk(dice_num):
         return 0.1
     elif dice_num == 4:
         return 0.15
-    
-
 
 if __name__ == "__main__":
-    Roman = Player(1, 0.7)
-    Lidia = Player(2, 0.3)
-    Bodzia = Player(3, 0.5)
-    Milosz = Player(4, 0.2)
-    print("R|" + "           " + "L|" + "           " + "B|" + "           " + "M")
-    print("----------------------------------------------------------------------------------")
-    while ((Bodzia.points < 1000) and (Milosz.points < 1000)) and ((Lidia.points < 1000) and (Roman.points < 1000)):
-        Roman.one_turn()
-        Lidia.one_turn()
-        Bodzia.one_turn()
-        Milosz.one_turn()
-        print(str(Roman.points) + "|           " + str(Lidia.points) + "|          " + str(Bodzia.points) + "|          " + str(Milosz.points))
-    
+    R_scores = []
+    L_scores = []
+    B_scores = []
+    M_scores = []
+    for i in range(0, 1000):
+        Roman = Player(1, 0.7)
+        Lidia = Player(2, 0.3)
+        Bodzia = Player(3, 0.5)
+        Milosz = Player(4, 0.2)
+        R_points = []
+        L_points = []
+        B_points = []
+        M_points = []
+        while ((Bodzia.points < 1000) and (Milosz.points < 1000)) and ((Lidia.points < 1000) and (Roman.points < 1000)):
+            Roman.one_turn()
+            R_points.append(Roman.points)
+            Lidia.one_turn()
+            L_points.append(Lidia.points)
+            Bodzia.one_turn()
+            B_points.append(Bodzia.points)
+            Milosz.one_turn()
+            M_points.append(Milosz.points)
+        R_scores.append(R_points[-1])
+        L_scores.append(L_points[-1])
+        B_scores.append(B_points[-1])
+        M_scores.append(M_points[-1])
+
+    print("Roman's mean score: " + str(st.mean(R_scores)))
+    print("Lidia's mean score: " + str(st.mean(L_scores)))
+    print("Bodzia's mean score: " + str(st.mean(B_scores)))
+    print("Miłosz's mean score: " + str(st.mean(M_scores)))
+
+    print("Roman's median: " + str(st.median(sorted(R_scores))))
+    print("Lidia's median: " + str(st.median(sorted(L_scores))))
+    print("Bodzia's median: " + str(st.median(sorted(B_scores))))
+    print("Miłosz's median: " + str(st.median(sorted(M_scores))))
+
+    print("Roman's mode: " + str(st.mode(R_scores)))
+    print("Lidia's mode: " + str(st.mode(L_scores)))
+    print("Bodzia's mode: " + str(st.mode(B_scores)))
+    print("Miłosz's mode: " + str(st.mode(M_scores)))
+
+    print("Roman's standard deviation: " + str(st.stdev(R_scores)))
+    print("Lidia's standard deviation: " + str(st.stdev(L_scores)))
+    print("Bodzia's standard deviation: " + str(st.stdev(B_scores)))
+    print("Miłosz's standard deviation: " + str(st.stdev(M_scores)))
+
+
+
