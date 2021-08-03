@@ -175,7 +175,7 @@ def simulation():
     risks = np.arange(0, 1, 0.05)
     scores = [[] for i in range(0, len(risks))]
 
-    for i in range(1000):
+    for i in range(10000):
         id = 1
         players = []
         for i in risks:
