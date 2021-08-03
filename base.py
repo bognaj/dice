@@ -1,6 +1,7 @@
 import random as r
 import statistics as st
 import matplotlib.pyplot as plt
+import numpy as np
 
 class Dice:
     """Class representing dice"""
@@ -170,84 +171,42 @@ def change_risk(dice_num):
     elif dice_num == 4:
         return 0.15
 
-if __name__ == "__main__":
-    R_scores = []
-    L_scores = []
-    B_scores = []
-    M_scores = []
-    for i in range(0, 1000):
-        Roman = Player(1, 0.7)
-        Lidia = Player(2, 0.3)
-        Bodzia = Player(3, 0.5)
-        Milosz = Player(4, 0.2)
-        R_points = []
-        L_points = []
-        B_points = []
-        M_points = []
-        while ((Bodzia.points < 1000) and (Milosz.points < 1000)) and ((Lidia.points < 1000) and (Roman.points < 1000)):
-            Roman.one_turn()
-            R_points.append(Roman.points)
-            Lidia.one_turn()
-            L_points.append(Lidia.points)
-            Bodzia.one_turn()
-            B_points.append(Bodzia.points)
-            Milosz.one_turn()
-            M_points.append(Milosz.points)
-        R_scores.append(R_points[-1])
-        L_scores.append(L_points[-1])
-        B_scores.append(B_points[-1])
-        M_scores.append(M_points[-1])
+def simulation():
+    risks = np.arange(0, 1, 0.05)
+    scores = [[] for i in range(0, len(risks))]
 
+    for i in range(1000):
+        id = 1
+        players = []
+        for i in risks:
+            pl = Player(id, i)
+            players.append(pl)
+            id += 1
 
-    R_wins = sum([i >= 1000 for i in R_scores])
-    L_wins = sum([i >= 1000 for i in L_scores])
-    B_wins = sum([i >= 1000 for i in B_scores])
-    M_wins = sum([i >= 1000 for i in M_scores])
+        points = [[] for i in players]
 
-    print("Roman's_wins: " + str(R_wins))
-    print("Lidia's_wins: " + str(L_wins))
-    print("Bodzia's_wins: " + str(B_wins))
-    print("Miłosz's_wins: " + str(M_wins))
-    print("------------------------------")
+        while all( i.points < 1000 for i in players):
+            for j in players:
+                j.one_turn()
+                ind = players.index(j)
+                points[ind].append(j.points)
 
-    R_mean = st.mean(R_scores)
-    L_mean = st.mean(L_scores)
-    B_mean = st.mean(B_scores)
-    M_mean = st.mean(M_scores)
-
-    print("Roman's mean score: " + str(R_mean))
-    print("Lidia's mean score: " + str(L_mean))
-    print("Bodzia's mean score: " + str(B_mean))
-    print("Miłosz's mean score: " + str(M_mean))
-    print("------------------------------")
-
-    R_median = st.median(sorted(R_scores))
-    L_median = st.median(sorted(L_scores))
-    B_median = st.median(sorted(B_scores))
-    M_median = st.median(sorted(M_scores))
-
-    print("Roman's median: " + str(R_median))
-    print("Lidia's median: " + str(L_median))
-    print("Bodzia's median: " + str(B_median))
-    print("Miłosz's median: " + str(M_median))
-    print("------------------------------")
-
-    R_stdev = st.stdev(R_scores)
-    L_stdev = st.stdev(L_scores)
-    B_stdev = st.stdev(B_scores)
-    M_stdev = st.stdev(M_scores)
-
-    print("Roman's standard deviation: " + str(R_stdev))
-    print("Lidia's standard deviation: " + str(L_stdev))
-    print("Bodzia's standard deviation: " + str(B_stdev))
-    print("Miłosz's standard deviation: " + str(M_stdev))
-    print("------------------------------")
-
-    risks = [Roman.risk, Lidia.risk, Bodzia.risk, Milosz.risk]
-    wins = [R_wins, L_wins, B_wins, M_wins]
-    means = [R_mean, L_mean, B_mean, M_mean]
-    medians = [R_median, L_median, B_median, M_median]
-    stdevs = [R_stdev, L_stdev, B_stdev, M_stdev]
+        for i in range(0, len(points)):
+            scores[i].append(points[i][-1])
+    
+    wins = []
+    means = []
+    medians = []
+    stdevs = []
+    for i in range(len(scores)):
+        pl_wins = sum([j >= 1000 for j in scores[i]])
+        pl_mean = st.mean(scores[i])
+        pl_median = st.median(scores[i])
+        pl_stdev = st.stdev(scores[i])
+        wins.append(pl_wins)
+        means.append(pl_mean)
+        medians.append(pl_median)
+        stdevs.append(pl_stdev)
 
     plt.subplot(2, 2, 1)
     plt.scatter(risks, wins)
@@ -274,6 +233,12 @@ if __name__ == "__main__":
     plt.title("STANDARD DEVIATION")
 
     plt.show()
+
+    
+        
+
+if __name__ == "__main__":
+    simulation()
 
 
 
