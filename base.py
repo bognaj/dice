@@ -104,7 +104,29 @@ class Player:
                             self.add_points(curr)
                             res = [0, 0]
         return self.points
-
+    
+    def till_the_end(self):
+        curr = 0
+        self.points = 0
+        throw = self.throw_dices(5)
+        res = collect_points(throw)
+        curr += res[0]
+        act = 5 - res[1]
+        while res[0] > 0: 
+            if act > 0:
+                throw = self.throw_dices(act)
+                res = collect_points(throw)
+                curr += res[0]
+                act -= res[1]
+            elif act == 0:
+                act = 5
+                throw = self.throw_dices(act)
+                res = collect_points(throw)
+                curr += res[0]
+                act -= res[1]
+        self.add_points(curr)
+        return self.points
+    
 
 def collect_points(throw_result):
     """Calculating the throw score"""
