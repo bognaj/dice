@@ -30,7 +30,7 @@ class Dice:
 
 class Player:
     """Class representing player"""
-    def __init__(self, id, risk):
+    def __init__(self, id, risk, limits):
         # player id
         self.id = id
         # player's dice
@@ -39,6 +39,8 @@ class Player:
         self.points = 0
         # eagerness to take the risk
         self.risk = risk
+        # limits - strategies
+        self.limits = limits
 
     def add_points(self, score):
         """"Update player's points"""
@@ -127,6 +129,41 @@ class Player:
         self.add_points(curr)
         return self.points
     
+    def simple_one_turn(self):
+        curr = 0
+        throw = self.throw_dices(5)
+        res = collect_points(throw)
+        curr += res[0]
+        act = 5 - res[1]
+        while res[0] > 0: 
+            if act > 0:
+                throw = self.throw_dices(act)
+                res = collect_points(throw)
+                curr += res[0]
+                act -= res[1]
+                if self.save_score(act, curr, self.points, self.limits):
+                    self.add_points(curr)
+                    res = [0, 0]
+            elif act == 0:
+                act = 5
+                throw = self.throw_dices(act)
+                res = collect_points(throw)
+                curr += res[0]
+                act -= res[1]
+                if self.save_score(act, curr, self.points, self.limits):
+                    self.add_points(curr)
+                    res = [0, 0]
+        return self.points
+    
+    # decision whether to save the score or risk and go ahead
+    def save_score(self, dice_num, this_turn_score, overall_score, limits):
+        return self.decision(dice_num, this_turn_score, overall_score, limits)
+
+    def decision(self, dice_num, this_turn_score, overall_score, limits):
+        if (this_turn_score >= limits[dice_num - 1] or this_turn_score + overall_score >= 1000):
+            return True
+        else:
+            return False
 
 def collect_points(throw_result):
     """Calculating the throw score"""
