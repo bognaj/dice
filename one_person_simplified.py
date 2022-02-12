@@ -1,10 +1,5 @@
 from base import Player
-from base import Dice
-from base import collect_points
-import matplotlib.pyplot as plt
 import numpy as np
-
-
     
 def game(limits):
     player = Player(1, 0, limits)
