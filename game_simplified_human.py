@@ -8,8 +8,6 @@ from base import Dice
 
 pygame.init()
 
-
-
 # screen size
 SCREEN_WIDTH=400
 SCREEN_HEIGHT=600
