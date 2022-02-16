@@ -20,10 +20,10 @@ BLUE2 = (0, 100, 255)
 
 font = pygame.font.SysFont('arial', 25)
 
-class DiceGameHuman:
+class DiceGameAI:
     def __init__(self): # initiating the game
         self.display = pygame.display.set_mode(SCREEN_SIZE)
-        pygame.display.set_caption("Dice game for humans")
+        pygame.display.set_caption("Dice game for AI")
         self.clock = pygame.time.Clock()
         
         self.dice = Dice()    
@@ -32,7 +32,15 @@ class DiceGameHuman:
         self.this_round_points = 0 # points in this turn
         self.rounds = 0 # num of rounds needed to achieve 1000
         
-        self._update_ui()
+        
+    def reset(self):
+        # init game state
+        self.active = 5
+        self.overall_points = 0
+        self.this_round_points = 0
+        self.rounds = 0
+
+        self.frame_iteration = 0    
         
     def throw_dices(self, num_of_active):
         # throwing all active dices
@@ -41,22 +49,21 @@ class DiceGameHuman:
             score_list.append(self.dice.throw())
         return score_list
         
-    def play_step(self):
+    def play_step(self, action):
         game_over = False
+        reward = 0
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_pos = event.pos
-                if self.button_throw.collidepoint(mouse_pos):
-                    return self.keep_rolling()
-                if self.button_save.collidepoint(mouse_pos):
-                    return self.save_score()
+        if action[0] == 0:
+            return self.keep_rolling()
+        elif action[0] == 1:
+            return self.save_score()
                 
         self._update_ui()
         
-        return game_over, self.rounds
+        return reward, game_over, self.rounds
         
     def keep_rolling(self):
         # decision to throw the dices
@@ -69,17 +76,19 @@ class DiceGameHuman:
             self.this_round_points = 0
             game_over = False
             self.rounds += 1
+            reward = -1
             
         else:
             self.this_round_points += points[0]
             dice_num = self.active - points[1]
+            reward = 1
             
             if dice_num == 0:
                 self.active = 5
             else:
                 self.active = dice_num    
             game_over = False    
-        return game_over, self.rounds
+        return reward, game_over, self.rounds
         
         
     def save_score(self):
@@ -87,16 +96,20 @@ class DiceGameHuman:
         if self.this_round_points == 0:
             game_over = False
             self.rounds += 1
+            reward = -5
+            
         else:
             self.overall_points += self.this_round_points
             if self.overall_points >= 1000:
+                reward = 100
                 game_over = True
             else:
+                reward = 5
                 game_over = False
             self.this_round_points = 0
             self.active = 5
             self.rounds += 1
-        return game_over, self.rounds
+        return reward, game_over, self.rounds
                       
     def _update_ui(self):
         # displaying all the game elements
@@ -121,17 +134,3 @@ class DiceGameHuman:
         self.display.blit(text3, [100, 150])
         
         pygame.display.flip()
-
-if __name__ == '__main__':
-    game = DiceGameHuman()
-    
-    # game loop
-    while True:
-        game_over, score = game.play_step()
-        
-        if game_over == True:
-            break
-        
-    print('Final Score', score)
-           
-    pygame.quit()
